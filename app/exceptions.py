@@ -11,3 +11,4 @@ class InvlidGroupError(Exception):
                 GroupType.values(),
             )
         )
+        self.group_type = group_type
