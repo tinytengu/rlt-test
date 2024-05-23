@@ -41,6 +41,18 @@ poetry install
 pip install -r requirements.txt
 ```
 
+## 1.3 Установка переменных окружения
+### .env
+```bash
+BOT_TOKEN=YOUR:BOTTOKEN # API ключ бота Telegram
+DATABASE_URI=mongodb://localhost:27017/ # URL инстанса MongoDB
+```
+
+## 1.4 Запуск Telegram бота
+```bash
+python main.py
+```
+
 # 2. Тестирование
 ```bash
 python -m unittest
