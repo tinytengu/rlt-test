@@ -4,18 +4,21 @@ version = "0.1.0"
 description = ""
 authors = ["tinytengu <tinytengu@yandex.ru>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
 motor = "^3.4.0"
 aiogram = "^3.6.0"
 asyncio = "^3.4.3"
+python-dateutil = "^2.9.0.post0"
 
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.5"
 pycodestyle = "^2.11.1"
 mypy = "^1.10.0"
+types-python-dateutil = "^2.9.0.20240316"
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,10 +1,11 @@
 from datetime import datetime
 
+from dateutil.relativedelta import relativedelta
 from motor.motor_asyncio import AsyncIOMotorCollection
 
 from .types import AggregationResult, GroupType
 from .exceptions import InvlidGroupError
-from .dateutils import parse_datetime
+from .dateutils import parse_datetime, get_datetime_range
 
 
 def get_mongo_group(group_type: GroupType) -> dict[str, dict[str, str]]:
@@ -39,6 +40,20 @@ def get_mongo_group(group_type: GroupType) -> dict[str, dict[str, str]]:
                 "day": {"$dayOfMonth": "$dt"},
                 "hour": {"$hour": "$dt"},
             }
+        case _:
+            raise InvlidGroupError(group_type)
+
+
+def get_timedelta_from_group(group_type: GroupType) -> relativedelta:
+    match group_type:
+        case GroupType.YEAR:
+            return relativedelta(years=1)
+        case GroupType.MONTH:
+            return relativedelta(months=1)
+        case GroupType.DAY:
+            return relativedelta(days=1)
+        case GroupType.HOUR:
+            return relativedelta(hours=1)
         case _:
             raise InvlidGroupError(group_type)
 
@@ -136,4 +151,24 @@ async def get_records_within_time_range(
     )
     grouped_records: dict = await cursor.next()
 
-    return AggregationResult(**grouped_records)
+    # Fill missing dates
+    dataset: list[int | float] = []
+    labels: list[datetime] = []
+
+    all_dates = get_datetime_range(
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
+        delta=get_timedelta_from_group(group_type),
+        tzinfo=None,
+    )
+    for date in all_dates:
+        if date in grouped_records["labels"]:
+            dataset.append(
+                grouped_records["dataset"][grouped_records["labels"].index(date)]
+            )
+            labels.append(date)
+        else:
+            dataset.append(0)
+            labels.append(date)
+
+    return AggregationResult(dataset=dataset, labels=labels)

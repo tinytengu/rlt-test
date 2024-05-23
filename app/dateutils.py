@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 
+from dateutil.relativedelta import relativedelta
+
 
 def parse_datetime(source: datetime | str) -> datetime:
     """
@@ -17,7 +19,7 @@ def parse_datetime(source: datetime | str) -> datetime:
     return source if isinstance(source, datetime) else datetime.fromisoformat(source)
 
 
-def datetime_to_iso(source: datetime) -> str:
+def datetime_to_iso(source: datetime, drop_timezone: bool = False) -> str:
     """
     Converts a datetime object to an ISO 8601 formatted string.
 
@@ -32,4 +34,43 @@ def datetime_to_iso(source: datetime) -> str:
     """
     if not isinstance(source, datetime):
         raise ValueError("Input must be a datetime object.")
-    return source.replace(tzinfo=timezone.utc).isoformat()
+
+    result = source.replace(tzinfo=timezone.utc).isoformat()
+
+    if drop_timezone:
+        return result.replace("+00:00", "")
+
+    return result
+
+
+def get_datetime_range(
+    start_datetime: datetime,
+    end_datetime: datetime,
+    delta: relativedelta,
+    tzinfo: timezone | None = None,
+) -> list[datetime]:
+    """
+    Generates a list of datetime objects within a specified range, with a given time delta increment.
+
+    Args:
+    - start_datetime (datetime): The start datetime object.
+    - end_datetime (datetime): The end datetime object.
+    - delta (relativedelta): The time delta increment.
+    - tzinfo (timezone | None): The timezone object, if desired. Defaults to None.
+
+    Returns:
+    - list[datetime]: A list of datetime objects within the specified range, incremented by the given time delta.
+
+    Raises:
+    - ValueError: If the input is not a datetime object.
+    """
+    result: list[datetime] = []
+
+    current_date = start_datetime
+    while current_date <= end_datetime:
+        if tzinfo:
+            current_date = current_date.replace(tzinfo=tzinfo)
+        result.append(current_date)
+        current_date += delta
+
+    return result

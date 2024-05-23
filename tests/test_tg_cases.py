@@ -84,7 +84,9 @@ class HourTestCase(unittest.IsolatedAsyncioTestCase):
 
         result = {
             "dataset": output.dataset,
-            "labels": [datetime_to_iso(label) for label in output.labels],
+            "labels": [
+                datetime_to_iso(label, drop_timezone=True) for label in output.labels
+            ],
         }
 
         self.assertEqual(result, expected_result)
@@ -233,7 +235,9 @@ class HourTestCase(unittest.IsolatedAsyncioTestCase):
 
         result = {
             "dataset": output.dataset,
-            "labels": [datetime_to_iso(label) for label in output.labels],
+            "labels": [
+                datetime_to_iso(label, drop_timezone=True) for label in output.labels
+            ],
         }
 
         self.assertEqual(result, expected_result)
@@ -263,7 +267,9 @@ class HourTestCase(unittest.IsolatedAsyncioTestCase):
 
         result = {
             "dataset": output.dataset,
-            "labels": [datetime_to_iso(label) for label in output.labels],
+            "labels": [
+                datetime_to_iso(label, drop_timezone=True) for label in output.labels
+            ],
         }
 
         self.assertEqual(result, expected_result)
