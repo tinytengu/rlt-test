@@ -5,6 +5,8 @@ from enum import StrEnum
 
 @dataclass(frozen=False)
 class AggregationResult:
+    """Used for `get_records_within_time_range` result."""
+
     dataset: list[int | float]
     labels: list[datetime]
 

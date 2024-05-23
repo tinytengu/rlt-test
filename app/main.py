@@ -45,6 +45,18 @@ def get_mongo_group(group_type: GroupType) -> dict[str, dict[str, str]]:
 
 
 def get_timedelta_from_group(group_type: GroupType) -> relativedelta:
+    """
+    Get time delta based on the provided group type.
+
+    Args:
+    - group_type (GroupType): The type of grouping to perform.
+
+    Returns:
+    - relativedelta: A relativedelta object representing the time interval for the given group type.
+
+    Raises:
+    - InvlidGroupError: If the provided group type is not valid.
+    """
     match group_type:
         case GroupType.YEAR:
             return relativedelta(years=1)
